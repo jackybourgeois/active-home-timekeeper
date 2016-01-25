@@ -1,0 +1,177 @@
+<!--
+  #%L
+  Active Home :: :: Timekeeper
+  $Id:$
+  $HeadURL:$
+  %%
+  Copyright (C) 2016 org.activehome
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as
+  published by the Free Software Foundation, either version 3 of the 
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public 
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/gpl-3.0.html>.
+  #L%
+  -->
+<link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="/bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="/bower_components/iron-icons/av-icons.html">
+<link rel="import" href="/bower_components/paper-input/paper-input.html">
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="/bower_components/paper-slider/paper-slider.html">
+<link rel="import" href="/${id}/analog-clock.html">
+
+<dom-module id="timekeeper-view">
+
+    <template>
+        <iron-ajax id="ajax" handle-as="json" on-response="handleResponse"></iron-ajax>
+
+        <style>
+            #timekeeper {
+                background-color:#FFFFFF;
+                color:#000000;
+                overflow:auto;
+                text-align: center;
+                margin:20px auto 20px auto;
+                max-width:300px;
+                padding:10px;
+                -webkit-box-shadow: 0 0 15px rgba(0,0,0,1);
+                -moz-box-shadow: 0 0 15px rgba(0,0,0,1);
+                box-shadow: 0 0 15px rgba(0,0,0,1);
+            }
+
+            paper-slider::shadow #sliderKnobInner,
+            paper-slider::shadow #sliderKnobInner::before,
+            paper-slider::shadow #sliderBar::shadow #activeProgress {
+                background-color: #000000;
+            }
+        </style>
+
+        <div id="timekeeper">
+            <div style="width: 100px;position: absolute;margin: -20px 0 0 -20px">
+                <analog-clock time="{{time}}" status="{{status}}" zip="{{zip}}"></analog-clock>
+            </div>
+
+            <h2 style="margin: 0 0 0 50px">TimeKeeper</h2>
+
+            <div style="margin-left: 130px;position:absolute">
+                <paper-icon-button icon="save" on-click="sendData"></paper-icon-button>
+                <paper-icon-button id="startPauseBt" icon="av:play-arrow" on-click="startPauseTime"></paper-icon-button>
+                <paper-icon-button id="stopBt" icon="av:stop" on-click="stopTime"></paper-icon-button>
+            </div>
+
+            <div class="params" style="margin-top: 30px">
+                <paper-input id="startDate" label="Start date"></paper-input><br>
+                <paper-slider id="zip" pin snaps max="1800" step="300" label="Zip" value="{{zip}}"></paper-slider>
+            </div>
+            Status: {{status}}
+        </div>
+
+    </template>
+
+    <script>
+        Polymer({
+            is:'timekeeper-view',
+            time: 0,
+            status:"UNKNOWN",
+            zip: 300,
+
+            ready: function() {
+                this.loadContent();
+                var comp = this;
+                document.querySelector("web-socket").addEventListener('tic', function(e) {
+                    comp.time = e.detail.ts;
+                    comp.status = e.detail.status;
+                });
+            },
+
+            loadContent: function() {
+                var ajax = this.$.ajax;
+                ajax.method = "GET";
+                ajax.url = "/${id}/getProperties";
+                ajax.generateRequest();
+            },
+
+            startPauseTime: function() {
+                var ajax = this.$.ajax;
+                ajax.method = "GET";
+                if (this.status=="INITIALIZED") {
+                    ajax.url = "/${id}/startTime";
+                } else if (this.status=="RUNNING") {
+                    ajax.url = "/${id}/pauseTime";
+                } else if (this.status=="IDLE") {
+                    ajax.url = "/${id}/resumeTime";
+                }
+
+                this.fire('sent-ajax', {url:ajax.url, body:ajax.body});
+                ajax.generateRequest();
+            },
+
+            stopTime: function() {
+                var ajax = this.$.ajax;
+                ajax.method = "GET";
+                ajax.url = "/${id}/stopTime";
+                ajax.generateRequest();
+            },
+
+            handleResponse: function(e) {
+                var data = e.detail.response;
+                if (data.hasOwnProperty("startDate")) this.$.startDate.value = data.startDate;
+                if (data.hasOwnProperty("zip")) {
+                    this.zip = data.zip;
+                }
+                //if (data.hasOwnProperty("status")) this.status = data.status;
+            },
+
+            statusChanged: function() {
+                switch (this.status) {
+                    case "RUNNING":
+                        this.$.startPauseBt.icon = "av:pause";
+                        this.$.startPauseBt.disabled = false;
+                        this.$.stopBt.disabled = false;
+                        this.$.startDate.disabled=true;
+
+                        break;
+                    case "IDLE":
+                        this.$.startPauseBt.icon = "av:play-arrow";
+                        this.$.startPauseBt.disabled = false;
+                        this.$.stopBt.disabled = true;
+                        this.$.startDate.disabled=true;
+                        break;
+                    case "INITIALIZED":
+                        this.$.startPauseBt.icon = "av:play-arrow";
+                        this.$.startPauseBt.disabled = false;
+                        this.$.stopBt.disabled = true;
+                        this.$.startDate.disabled=false;
+                        break;
+                    case "UNKNOWN":
+                        this.$.startPauseBt.disabled = true;
+                        this.$.stopBt.disabled = true;
+                        break;
+                }
+            },
+
+            sendData: function() {
+                var ajax = this.$.ajax;
+                ajax.method = "POST";
+                ajax.url = "/${id}/setProperties";
+
+                var values = {};
+                values.startDate = this.$.startDate.value;
+                values.zip = Math.floor(parseFloat(this.$.zip.value));
+
+                ajax.body = JSON.stringify({params:values});
+                this.fire('sent-ajax', {url:ajax.url, body:ajax.body});
+                ajax.generateRequest();
+            }
+        });
+    </script>
+</dom-module>
