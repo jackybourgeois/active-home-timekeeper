@@ -268,9 +268,9 @@ public class TimeKeeper extends Service implements ModelListener {
 
         try {
             long localStart = 0;
-            if (properties.get("startDate")!=null) {
+            if (properties.get("startDate") != null) {
                 localStart = df.parse(properties.get("startDate").asString()).getTime();
-            } else if (properties.get("startTS")!=null) {
+            } else if (properties.get("startTS") != null) {
                 localStart = properties.get("startTS").asLong();
             }
 
@@ -321,7 +321,7 @@ public class TimeKeeper extends Service implements ModelListener {
         super.modelUpdated();
     }
 
-    private  void initExecutor() {
+    private void initExecutor() {
         stpe = new ScheduledThreadPoolExecutor(1, r -> {
             return new Thread(r, getFullId() + "-timekeeper-pool");
         });

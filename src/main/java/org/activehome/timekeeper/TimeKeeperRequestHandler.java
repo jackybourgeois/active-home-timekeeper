@@ -80,7 +80,7 @@ public class TimeKeeperRequestHandler implements RequestHandler {
 
     public JsonValue file(String str) {
         String content = FileHelper.fileToString(str, getClass().getClassLoader());
-        if (str.compareTo("timekeeper-view.html")==0) content = content.replaceAll("\\$\\{id\\}", service.getId());
+        if (str.compareTo("timekeeper-view.html") == 0) content = content.replaceAll("\\$\\{id\\}", service.getId());
         JsonObject json = new JsonObject();
         json.add("content", content);
         json.add("mime", TypeMime.valueOf(str.substring(str.lastIndexOf(".") + 1, str.length())).getDesc());

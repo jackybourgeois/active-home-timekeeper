@@ -26,25 +26,50 @@
     <template>
 
         <style>
-            #clock {stroke: black; stroke-linecap: round; fill: #dfdfdf;}
-            #face { stroke-width: 3px;}
-            #ticks { stroke-width: 2px; }
-            #hourhand {stroke-width: 5px;}
-            #minutehand {stroke-width: 5px;}
-            #numbers {font-family: sans-serif; font-size: 7pt; font-weight: bold;text-anchor: middle; stroke: none; fill: black;}
+            #clock {
+                stroke: black;
+                stroke-linecap: round;
+                fill: #dfdfdf;
+            }
+
+            #face {
+                stroke-width: 3px;
+            }
+
+            #ticks {
+                stroke-width: 2px;
+            }
+
+            #hourhand {
+                stroke-width: 5px;
+            }
+
+            #minutehand {
+                stroke-width: 5px;
+            }
+
+            #numbers {
+                font-family: sans-serif;
+                font-size: 7pt;
+                font-weight: bold;
+                text-anchor: middle;
+                stroke: none;
+                fill: black;
+            }
         </style>
 
         <svg id="clock" viewBox="0 0 100 100" style="width:100%;height:100%">
             <defs id="defs3154">
                 <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
-                    <feGaussianBlur in="SourceAlpha" stdDeviation="1" result="blur" />
-                    <feOffset in="blur" dx="1" dy="1" result="shadow" />
+                    <feGaussianBlur in="SourceAlpha" stdDeviation="1" result="blur"/>
+                    <feOffset in="blur" dx="1" dy="1" result="shadow"/>
                     <feMerge>
-                        <feMergeNode in="SourceGraphic"/><feMergeNode in="shadow"/>
+                        <feMergeNode in="SourceGraphic"/>
+                        <feMergeNode in="shadow"/>
                     </feMerge>
                 </filter>
             </defs>
-            <circle id="face" cx="50" cy="50" r="45" />
+            <circle id="face" cx="50" cy="50" r="45"/>
             <g id="ticks">
                 <line x1='50' y1='5.000' x2='50.00' y2='10.00'/>
                 <line x1='72.50' y1='11.03' x2='70.00' y2='15.36'/>
@@ -60,8 +85,10 @@
                 <line x1='27.50' y1='11.03' x2='30.00' y2='15.36'/>
             </g>
             <g id="numbers">
-                <text x="50" y="18">12</text><text x="85" y="53">3</text>
-                <text x="50" y="88">6</text><text x="15" y="53">9</text>
+                <text x="50" y="18">12</text>
+                <text x="85" y="53">3</text>
+                <text x="50" y="88">6</text>
+                <text x="15" y="53">9</text>
             </g>
             <g id="hands" filter="url(#shadow)">
                 <line id="hourhand" x1="50" y1="50" x2="50" y2="30"/>
@@ -95,42 +122,42 @@
                 status: 'updateStatus'
             },
 
-            ready: function() {
+            ready: function () {
                 var comp = this;
-                document.querySelector("web-socket").addEventListener('tic', function(e) {
+                document.querySelector("web-socket").addEventListener('tic', function (e) {
                     comp.time = e.detail.ts;
                     comp.localTS = comp.time;
                 });
             },
 
-            updateStatus: function() {
+            updateStatus: function () {
                 var comp = this;
                 console.log("updateStatus: " + comp.status);
-                if (comp.status=="RUNNING" && comp.timerId==0) {
+                if (comp.status == "RUNNING" && comp.timerId == 0) {
                     comp.timerId = window.setInterval(comp.increaseTime, comp.interval, comp);
-                } else if (comp.timerId!=0) {
+                } else if (comp.timerId != 0) {
                     console.log("not running, timer: " + comp.timerId);
                     window.clearInterval(comp.timerId);
                     comp.timerId = 0;
                     comp.update_clock(comp);
-                } else if (comp.status=="INITIALIZED") {
+                } else if (comp.status == "INITIALIZED") {
                     console.log("init time: " + comp.localTS);
                     comp.update_clock(comp);
                 }
             },
 
-            increaseTime: function(comp) {
-                comp.localTS += comp.interval*comp.zip;
+            increaseTime: function (comp) {
+                comp.localTS += comp.interval * comp.zip;
                 comp.update_clock(comp);
             },
 
-            update_clock: function(comp) {
+            update_clock: function (comp) {
                 var startDate = new Date(comp.localTS);
                 var hours = startDate.getHours();
                 var minutes = startDate.getMinutes();
 
-                var minAngle = minutes*6;                       // 6 degrees per minute
-                var hourAngle = hours*30;                       // 30 degrees per hour
+                var minAngle = minutes * 6;                       // 6 degrees per minute
+                var hourAngle = hours * 30;                       // 30 degrees per hour
                 // Get SVG elements for the hands of the clock
                 var minHand = comp.$.minutehand;
                 var hourHand = comp.$.hourhand;
