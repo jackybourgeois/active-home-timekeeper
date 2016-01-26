@@ -8,7 +8,7 @@
     <artifactId>org.activehome.timekeeper</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>Active Home :: :: Timekeeper</name>
+    <name>Active Home :: Timekeeper</name>
     <description>Manage the time for sync of distributed components and simulation</description>
     <url>https://active-home.org</url>
 
