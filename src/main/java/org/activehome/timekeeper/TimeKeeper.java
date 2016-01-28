@@ -61,6 +61,21 @@ import java.util.concurrent.TimeUnit;
 @ComponentType
 public class TimeKeeper extends Service implements ModelListener {
 
+    @Param(defaultValue = "Manage the time for sync of distributed components and simulation.")
+    private String description;
+
+    @Param(defaultValue = "/activehome-timekeeper/master/docs/timekeeper.png")
+    private String img;
+
+    @Param(defaultValue = "/activehome-timekeeper/master/docs/timekeeper.md")
+    private String doc;
+
+    @Param(defaultValue = "/activehome-timekeeper/master/docs/demo.kevs")
+    private String demoScript;
+
+    @Param(defaultValue = "/activehome-timekeeper")
+    private String src;
+
     private TimeStatus status;
     private TimeZone timezone;
     private long startTS;
