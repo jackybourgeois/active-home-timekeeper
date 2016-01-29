@@ -36,12 +36,12 @@ import org.activehome.tools.file.TypeMime;
  * @author Jacky Bourgeois
  * @version %I%, %G%
  */
-public class TimeKeeperRequestHandler implements RequestHandler {
+public class TimekeeperRequestHandler implements RequestHandler {
 
     private final Request request;
-    private final TimeKeeper service;
+    private final Timekeeper service;
 
-    public TimeKeeperRequestHandler(Request request, TimeKeeper service) {
+    public TimekeeperRequestHandler(Request request, Timekeeper service) {
         this.request = request;
         this.service = service;
     }

@@ -2,11 +2,11 @@ package org.activehome.timekeeper;
 
 /*
  * #%L
- * Active Home :: :: Timekeeper
+ * Active Home :: Timekeeper
  * $Id:$
  * $HeadURL:$
  * %%
- * Copyright (C) 2016 org.activehome
+ * Copyright (C) 2016 Active Home Project
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -59,21 +59,11 @@ import java.util.concurrent.TimeUnit;
  * @version %I%, %G%
  */
 @ComponentType
-public class TimeKeeper extends Service implements ModelListener {
+public class Timekeeper extends Service implements ModelListener {
 
     @Param(defaultValue = "Manage the time for sync of distributed components and simulation.")
     private String description;
-
-    @Param(defaultValue = "/activehome-timekeeper/master/docs/timekeeper.png")
-    private String img;
-
-    @Param(defaultValue = "/activehome-timekeeper/master/docs/timekeeper.md")
-    private String doc;
-
-    @Param(defaultValue = "/activehome-timekeeper/master/docs/demo.kevs")
-    private String demoScript;
-
-    @Param(defaultValue = "/activehome-timekeeper")
+    @Param(defaultValue = "/active-home-timekeeper")
     private String src;
 
     private TimeStatus status;
@@ -108,7 +98,7 @@ public class TimeKeeper extends Service implements ModelListener {
 
     @Override
     protected final RequestHandler getRequestHandler(final Request request) {
-        return new TimeKeeperRequestHandler(request, this);
+        return new TimekeeperRequestHandler(request, this);
     }
 
     public final boolean init() {
