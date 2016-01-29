@@ -4,13 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.activehome</groupId>
-    <artifactId>org.activehome.timekeeper</artifactId>
+    <groupId>org.active-home</groupId>
+    <artifactId>org.active-home.timekeeper</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Active Home :: Timekeeper</name>
     <description>Manage the time for sync of distributed components and simulation</description>
-    <url>https://active-home.org</url>
+    <url>http://active-home.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -29,9 +29,9 @@
     </organization>
 
     <scm>
-        <connection>scm:git:git@github.com:jackybourgeois/activehome-timekeeper.git</connection>
-        <developerConnection>scm:git:git@github.com:jackybourgeois/activehome-timekeeper.git</developerConnection>
-        <url>http://github.com/jackybourgeois/activehome-timekeeper.git</url>
+        <connection>scm:git:git@github.com:jackybourgeois/active-home-timekeeper.git</connection>
+        <developerConnection>scm:git:git@github.com:jackybourgeois/active-home-timekeeper.git</developerConnection>
+        <url>http://github.com/jackybourgeois/active-home-timekeeper.git</url>
         <tag>HEAD</tag>
     </scm>
 
@@ -59,18 +59,18 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.activehome</groupId>
-            <artifactId>org.activehome.service</artifactId>
+            <groupId>org.active-home</groupId>
+            <artifactId>org.active-home.service</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.activehome</groupId>
-            <artifactId>org.activehome.tools</artifactId>
+            <groupId>org.active-home</groupId>
+            <artifactId>org.active-home.tools</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.activehome</groupId>
-            <artifactId>org.activehome.context</artifactId>
+            <groupId>org.active-home</groupId>
+            <artifactId>org.active-home.context</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -83,6 +83,57 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.3</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -103,19 +154,6 @@
                         <goals>
                             <goal>generate</goal>
                             <goal>deploy</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>2.1.2</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -165,13 +203,9 @@
     </build>
 
     <distributionManagement>
-        <repository>
-            <id>active-home-internal</id>
-            <url>sftp://active-home.org/maven/repo/internal</url>
-        </repository>
         <snapshotRepository>
-            <id>active-home-snapshots</id>
-            <url>sftp://active-home.org/maven/repo/snapshots</url>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 
@@ -179,14 +213,6 @@
         <repository>
             <id>kevoree-oss</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
-        </repository>
-        <repository>
-            <id>active-home-snapshots</id>
-            <url>http://active-home.org:8080/maven/snapshots/</url>
-        </repository>
-        <repository>
-            <id>active-home-internal</id>
-            <url>http://active-home.org:8080/maven/internal/</url>
         </repository>
     </repositories>
 
