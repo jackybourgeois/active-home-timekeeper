@@ -36,16 +36,8 @@
 
         <style>
             #timekeeper {
-                background-color: #FFFFFF;
-                color: #000000;
-                overflow: auto;
-                text-align: center;
-                margin: 20px auto 20px auto;
+                color: #ffffff;
                 max-width: 300px;
-                padding: 10px;
-                -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 1);
-                -moz-box-shadow: 0 0 15px rgba(0, 0, 0, 1);
-                box-shadow: 0 0 15px rgba(0, 0, 0, 1);
             }
 
             paper-slider::shadow #sliderKnobInner,
@@ -56,24 +48,22 @@
         </style>
 
         <div id="timekeeper">
-            <div style="width: 100px;position: absolute;margin: -20px 0 0 -20px">
+            <div style="width: 100px;float: left">
                 <analog-clock time="{{time}}" status="{{status}}" zip="{{zip}}"></analog-clock>
             </div>
 
-            <h2 style="margin: 0 0 0 50px">TimeKeeper</h2>
-
-            <div style="margin-left: 130px;position:absolute">
+            <div style="float: left">
                 <paper-icon-button icon="save" on-click="sendData"></paper-icon-button>
                 <paper-icon-button id="startPauseBt" icon="av:play-arrow" on-click="startPauseTime"></paper-icon-button>
                 <paper-icon-button id="stopBt" icon="av:stop" on-click="stopTime"></paper-icon-button>
             </div>
 
-            <div class="params" style="margin-top: 30px">
+            <div class="params">
                 <paper-input id="startDate" label="Start date"></paper-input>
-                <br>
                 <paper-slider id="zip" pin snaps max="1800" step="300" label="Zip" value="{{zip}}"></paper-slider>
             </div>
-            Status: {{status}}
+
+            {{status}}
         </div>
 
     </template>

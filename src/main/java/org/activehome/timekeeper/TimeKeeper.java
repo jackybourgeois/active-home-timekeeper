@@ -272,19 +272,18 @@ public class Timekeeper extends Service implements ModelListener {
         }
 
         try {
-            long localStart = 0;
+            startTS = 0;
             if (properties.get("startDate") != null) {
-                localStart = df.parse(properties.get("startDate").asString()).getTime();
+                long localStart = df.parse(properties.get("startDate").asString()).getTime();
+                startTS = localStart - timezone.getOffset(localStart);
             } else if (properties.get("startTS") != null) {
-                localStart = properties.get("startTS").asLong();
+                startTS = properties.get("startTS").asLong();
             }
 
-            long start = localStart - timezone.getOffset(localStart);
             int newZip = properties.get("zip").asInt();
             if (newZip == 0) {
                 newZip = 1;
             }
-            startTS = start;
             zip = newZip;
             long ticFreq = HOUR / zip;
             ticFrequency = ticFreq;
