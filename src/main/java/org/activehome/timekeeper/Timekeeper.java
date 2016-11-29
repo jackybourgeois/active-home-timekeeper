@@ -58,11 +58,9 @@ import java.util.concurrent.TimeUnit;
  * @author Jacky Bourgeois
  * @version %I%, %G%
  */
-@ComponentType
+@ComponentType(description = "Manage the time for sync of distributed components and simulation.")
 public class Timekeeper extends Service implements ModelListener {
 
-    @Param(defaultValue = "Manage the time for sync of distributed components and simulation.")
-    private String description;
     @Param(defaultValue = "/active-home-timekeeper")
     private String src;
 
@@ -80,7 +78,11 @@ public class Timekeeper extends Service implements ModelListener {
 
     private ScheduledThreadPoolExecutor stpe;
 
-    @Param(defaultValue = "")
+    /**
+     * The start time of the system.
+     * By default, use the actual/current time.
+     */
+    @Param(defaultValue = "actual")
     private String startDate;
     @Param(defaultValue = "x1")
     private String zipFactor;
@@ -274,16 +276,24 @@ public class Timekeeper extends Service implements ModelListener {
         try {
             startTS = 0;
             if (properties.get("startDate") != null) {
-                long localStart = df.parse(properties.get("startDate").asString()).getTime();
-                startTS = localStart - timezone.getOffset(localStart);
+                if (properties.get("startDate").asString().compareTo("actual") == 0) {
+                    startTS = System.currentTimeMillis();
+                } else {
+                    long localStart = df.parse(properties.get("startDate").asString()).getTime();
+                    startTS = localStart - timezone.getOffset(localStart);
+                }
             } else if (properties.get("startTS") != null) {
                 startTS = properties.get("startTS").asLong();
             }
 
-            int newZip = properties.get("zip").asInt();
-            if (newZip == 0) {
-                newZip = 1;
+            int newZip = 1;
+            if (properties.get("zip") != null) {
+                newZip = properties.get("zip").asInt();
+                if (newZip == 0) {
+                    newZip = 1;
+                }
             }
+
             zip = newZip;
             long ticFreq = HOUR / zip;
             ticFrequency = ticFreq;
@@ -316,7 +326,7 @@ public class Timekeeper extends Service implements ModelListener {
                             "addHandler", new Object[]{"/timekeeper", getFullId(), true}),
                     new ShowIfErrorCallback());
         }
-        if (status.equals(Status.UNKNOWN)) {
+        if (status == null || status.equals(Status.UNKNOWN)) {
             init();
         } else {
             sendTic(new Tic(getUTCTime(), zip,
