@@ -9,12 +9,12 @@
     <version>0.0.3-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Active Home :: Timekeeper</name>
-    <description>Manage the time for sync of distributed components and simulation</description>
+    <description>Manage the time for sync of distributed components and simulation.</description>
     <url>http://active-home.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <kevoree.version>5.3.2</kevoree.version>
+        <kevoree.version>5.4.0-SNAPSHOT</kevoree.version>
         <kmf.version>4.26.0</kmf.version>
         <junit.version>4.11</junit.version>
         <jdk.target>1.8</jdk.target>
@@ -65,11 +65,6 @@
         </dependency>
         <dependency>
             <groupId>org.active-home</groupId>
-            <artifactId>org.active-home.tools</artifactId>
-            <version>0.0.3-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.active-home</groupId>
             <artifactId>org.active-home.context</artifactId>
             <version>0.0.3-SNAPSHOT</version>
         </dependency>
@@ -77,6 +72,11 @@
             <groupId>com.eclipsesource.minimal-json</groupId>
             <artifactId>minimal-json</artifactId>
             <version>0.9.2</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
         </dependency>
     </dependencies>
 
@@ -169,6 +169,9 @@
                         <include>**/*.java</include>
                         <include>**/*.html</include>
                     </includes>
+                    <excludes>
+                        <exclude>**/SunsetSunrise.java</exclude>
+                    </excludes>
                 </configuration>
                 <executions>
                     <execution>
